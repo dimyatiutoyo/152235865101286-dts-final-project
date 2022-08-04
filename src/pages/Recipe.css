@@ -1,0 +1,8 @@
+.description-attribute {
+  display: flex;
+  align-items: self-end;
+  background-color: #96969634;
+  padding: 5px 8px;
+  border-radius: 10px;
+  margin-right: 10px !important;
+}

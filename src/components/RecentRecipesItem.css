@@ -1,0 +1,8 @@
+.detail-pill {
+  display: flex;
+  margin-right: 8px !important;
+  background-color: rgba(255, 255, 255, 0.292);
+  align-items: self-end;
+  border-radius: 20px;
+  padding: 3px 10px;
+}
