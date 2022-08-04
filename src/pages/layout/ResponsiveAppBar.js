@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,18 +11,17 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import Book from '@mui/icons-material/Book';
 import SearchIcon from '@mui/icons-material/Search';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { alpha, Backdrop, CircularProgress, InputBase } from '@mui/material';
+import { alpha, Backdrop, CircularProgress, InputBase, ListItemIcon } from '@mui/material';
 import { useNavigate, useLocation } from "react-router-dom";
 import { signOut } from 'firebase/auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../config/firebase';
 import CookieTwoToneIcon from '@mui/icons-material/CookieTwoTone';
+import { VerifiedUser } from '@mui/icons-material';
 
 const pages = [
   // { title: 'Resep', to: '/resep' },
@@ -72,13 +71,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const ResponsiveAppBar = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
-  const [user] = useAuthState(auth);
-  const [loading, setLoading] = React.useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -103,10 +102,12 @@ const ResponsiveAppBar = () => {
     try {
       setAnchorElUser(null);
       setTimeout(async () => {
+        localStorage.removeItem('user');
+        setUser(null);
         await signOut(auth);
-        setLoading(false);
         navigate('/');
-      }, 2000);
+        setLoading(false);
+      }, 1500);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -128,6 +129,14 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
+  const getUser = async () => {
+    const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+    setUser(userLocalStorage);
+  }
+
+  useEffect(() => {
+    getUser();
+  }, [])
 
 
   return (
@@ -261,7 +270,7 @@ const ResponsiveAppBar = () => {
               :
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {loading ? <CircularProgress color="inherit" /> : <Avatar alt={user?.email} src="/static/images/avatar/2.jpg" />}
+                  {loading ? <CircularProgress color="inherit" /> : <Avatar alt={user?.email} src={user?.photoURL} />}
 
                 </IconButton>
               </Tooltip>
@@ -283,10 +292,19 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign="center" onClick={() => navigate('/profil')}>{user?.email}</Typography>
+                <ListItemIcon>
+                  <VerifiedUser color='primary' />
+                </ListItemIcon>
+                <Typography textAlign="center" onClick={() => navigate('/profil')}>{user?.displayName ?? user?.email}</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => { }}>
+                <ListItemIcon>
+                  <FavoriteIcon color='error' />
+                </ListItemIcon>
+                <Typography textAlign="center">Favorit</Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout}>
-                <Typography textAlign="center">Logout</Typography>
+                <Typography textAlign="center" color='error'>Logout</Typography>
               </MenuItem>
             </Menu>
           </Box>

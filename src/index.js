@@ -10,9 +10,10 @@ import Home from './pages/Home';
 import { createTheme } from '@mui/material/styles';
 import { blue, red, yellow } from '@mui/material/colors';
 import Recipe from './pages/Recipe';
-import RecipeByCategory from './pages/RecipeByCategory';
+import RecipesByCategory from './pages/RecipesByCategory';
 import Search from './pages/Search';
 import Register from './pages/Register';
+import RouteGuard from './pages/RouteGuard';
 
 const lightTheme = createTheme({
   palette: {
@@ -29,8 +30,12 @@ root.render(
           <Route index path="/" element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/resep/kategori/:key' element={<RecipeByCategory />} />
-          <Route path='/resep/:key' element={<Recipe />} />
+          <Route path='/resep/kategori/:key' element={<RecipesByCategory />} />
+          <Route path='/resep/:key' element={
+            <RouteGuard loginOnly={true}>
+              <Recipe />
+            </RouteGuard>
+          } />
           <Route path='/cari/:title' element={<Search />} />
         </Routes>
       </BrowserRouter>

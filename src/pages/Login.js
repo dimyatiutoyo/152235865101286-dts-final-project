@@ -42,6 +42,7 @@ function Login() {
     }
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem('user', JSON.stringify(user));
       navigate('/');
     } catch (error) {
       console.log(error.message);
@@ -55,9 +56,8 @@ function Login() {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then(result => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
       const user = result.user;
-      console.log(token);
+      localStorage.setItem('user', JSON.stringify(user));
 
       navigate('/');
     }).catch(error => {

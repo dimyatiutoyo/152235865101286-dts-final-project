@@ -8,6 +8,9 @@ import AutoFixHighTwoToneIcon from '@mui/icons-material/AutoFixHighTwoTone';
 import LocalDiningTwoToneIcon from '@mui/icons-material/LocalDiningTwoTone';
 import AccessTimeTwoToneIcon from '@mui/icons-material/AccessTimeTwoTone';
 import './Recipe.css';
+import Ingredient from "../components/Ingredient";
+import NeededItems from "../components/NeededItems";
+import Steps from "../components/Steps";
 
 function Recipe() {
   const navParams = useParams();
@@ -27,7 +30,7 @@ function Recipe() {
   }
   return (
     <Layout>
-      <Box sx={{
+      {data.thumb != null && <Box sx={{
         height: {
           lg: '500px',
           md: '400px',
@@ -41,7 +44,8 @@ function Recipe() {
         backgroundPositionX: 'center',
         backgroundPositionY: 'center',
       }}>
-      </Box>
+      </Box>}
+
       <Typography variant="h3" sx={{
         marginBottom: '10px'
       }}>
@@ -69,36 +73,9 @@ function Recipe() {
         {data.desc}
       </Typography>
 
-      <Typography fontSize={18} fontWeight='bold' sx={{
-        marginTop: '20px',
-        marginBottom: '10px',
-      }}>
-        Bahan yang Dibutuhkan:
-      </Typography>
-      <Grid container spacing={2}>
-        {
-          data.needItem.map((item, index) => {
-            return (
-              <Grid item lg={3} md={3} sm={6} xs={12} key={index}>
-                <Box elevation={0} sx={{
-                  backgroundColor: '#96969634',
-                  borderRadius: '18px',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  padding: '10px'
-                }}>
-                  <Box>
-                    <img src={item.thumb_item} alt="" />
-                  </Box>
-                  <Typography fontWeight={'bold'}>
-                    {item.item_name}
-                  </Typography>
-                </Box>
-              </Grid>
-            )
-          })
-        }
-      </Grid>
+      <NeededItems data={data.needItem} />
+      <Ingredient data={data.ingredient} />
+      <Steps data={data.step} />
     </Layout>
   );
 }

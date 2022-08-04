@@ -1,37 +1,31 @@
 import { CircularProgress, Grid, Typography } from "@mui/material";
+import { useParams } from "react-router-dom";
 import apiClient from "../config/apiClient";
 import useSWR from "swr";
-import { useState } from "react";
-import ExploreItem from "./ExploreItem";
+import Layout from "./layout/Layout";
+import ExploreItem from "../components/ExploreItem";
 
-function Explore() {
+function RecipesByCategory() {
+  const params = useParams();
 
-  const [page, setPage] = useState(1);
-
-  const { data, error } = useSWR(`/api/recipes/${page}`, async (url) => {
+  const { data, error } = useSWR(`/api/category/recipes/${params.key}`, async (url) => {
     const response = await apiClient.get(url);
     return response.data.results;
   })
 
   if (!data) {
     return (
-      <>
-        <Typography fontSize={36} align={'center'} fontWeight='bold' sx={{ marginBottom: '15px', marginTop: '30px' }}>
-          Resep Terbaru
-        </Typography>
+      <Layout>
         <Typography align='center'><CircularProgress size={14} sx={{
           color: 'black'
         }} /> Loading...</Typography>
-      </>
+      </Layout>
     )
   };
   if (error) return 'Error';
 
   return (
-    <>
-      <Typography fontSize={36} align={'center'} fontWeight='bold' sx={{ marginBottom: '15px', marginTop: '30px' }}>
-        Resep Terbaru
-      </Typography>
+    <Layout>
       <Grid container spacing={2}>
         {
           data.map((recipe, index) => {
@@ -41,8 +35,8 @@ function Explore() {
           })
         }
       </Grid>
-    </>
+    </Layout>
   );
 }
 
-export default Explore;
+export default RecipesByCategory;
