@@ -14,6 +14,7 @@ import RecipesByCategory from './pages/RecipesByCategory';
 import Search from './pages/Search';
 import Register from './pages/Register';
 import RouteGuard from './pages/RouteGuard';
+import Profil from './pages/Profil';
 
 const lightTheme = createTheme({
   palette: {
@@ -37,6 +38,10 @@ root.render(
             </RouteGuard>
           } />
           <Route path='/cari/:title' element={<Search />} />
+          <Route path='/profil' element={
+            <RouteGuard loginOnly={true}>
+              <Profil />
+            </RouteGuard>} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
